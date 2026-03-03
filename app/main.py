@@ -59,7 +59,9 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Permite cualquier origen (para desarrollo)
+    allow_origins=[
+        "https://pedido-repartos-lima-provincia.vercel.app",
+    ],
     allow_credentials=True,
     allow_methods=["*"],  # Permite todos los métodos (GET, POST, etc.)
     allow_headers=["*"],  # Permite cualquier cabecera
