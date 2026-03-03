@@ -20,6 +20,9 @@ async def login(shalom: ShalomHttpClient) -> dict:
     2. POST /login → envía credenciales + token CSRF
     3. Si redirige a /dashboard → login exitoso, cookies guardadas
     """
+    # Paso 0: Limpiar cookies anteriores para forzar una nueva sesión limpia
+    shalom.client.cookies.clear()
+
     # Paso 1: Obtener el token CSRF del formulario de login
     response = await shalom.client.get("/login?origin=WEB")
     soup = BeautifulSoup(response.text, "html.parser")

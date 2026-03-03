@@ -61,6 +61,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://pedido-repartos-lima-provincia.vercel.app",
+        "http://localhost:5500",
     ],
     allow_credentials=True,
     allow_methods=["*"],  # Permite todos los métodos (GET, POST, etc.)
