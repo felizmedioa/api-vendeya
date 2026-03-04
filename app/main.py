@@ -29,6 +29,7 @@ from app.features.register.routes import router as register_router
 from app.features.get_key.routes import router as get_key_router
 from app.features.terminals.routes import router as terminals_router
 from app.features.process_shipment.routes import router as process_shipment_router
+from app.features.set_code.route import router as set_code_router
 from app.shared.http_client import ShalomHttpClient
 
 
@@ -83,3 +84,4 @@ app.include_router(register_router)
 app.include_router(get_key_router)
 app.include_router(terminals_router)
 app.include_router(process_shipment_router)
+app.include_router(set_code_router)

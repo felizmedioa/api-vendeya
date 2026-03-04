@@ -13,18 +13,22 @@ from app.features.process_shipment.schemas import (
     ProcessShipmentResponse,
 )
 from app.shared.http_client import ShalomHttpClient
+from app.features.set_code.service import set_code
+from app.features.set_code.schemas import SetCodeRequest
 
+from app.core.config import settings
 
 async def procesar_envio(
     client: ShalomHttpClient,
     datos: ProcessShipmentRequest,
 ) -> ProcessShipmentResponse:
     """
-    Ejecuta secuencialmente los 3 pasos del flujo de envío.
+    Ejecuta secuencialmente los 4 pasos del flujo de envío.
 
     1. Filleo  – llena el Excel y lo sube a Shalom.
     2. Preregister – obtiene los pre-envíos y extrae el id.
-    3. Register – registra la orden con el id obtenido.
+    3. Set Code – asigna el código a los envíos.
+    4. Register – registra la orden con el id obtenido.
 
     Si cualquier paso falla, retorna inmediatamente indicando
     cuál fue el paso que falló.
@@ -58,7 +62,19 @@ async def procesar_envio(
             detail=f"Error en preregister: {exc}",
         )
 
-    # ── Paso 3: Register ────────────────────────────────────────────────
+    # ── Paso 3: Set Code ────────────────────────────────────────────────
+    try:
+        set_code_request = SetCodeRequest(code=settings.CLAVE_PAQUETE) 
+        await set_code(client, set_code_request)
+    except Exception as exc:
+        return ProcessShipmentResponse(
+            success=False,
+            failed_step="set_code",
+            detail=f"Error en set_code: {exc}",
+        )
+
+
+    # ── Paso 4: Register ────────────────────────────────────────────────
     try:
         register_request = RegisterRequest(serviceOrder=[order_id])
         resultado = await registrar_orden(client, register_request)
