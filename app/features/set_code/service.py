@@ -9,7 +9,7 @@ async def set_code(client: ShalomHttpClient, datos: SetCodeRequest) -> SetCodeRe
     response = await client.client.post(
         "/security-code/massive",
         headers=headers,
-        json=datos.dict(),
+        json=datos.model_dump(),
     )
 
     return response.json()
