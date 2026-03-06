@@ -1,8 +1,8 @@
 # ============================================================================
-# service.py — Lógica de búsqueda con Shalom
+# service.py — Lógica de preregister
 # ============================================================================
 
-from app.features.preregister.schemas import SendRequest
+from app.features.process_shipment.preregister.schemas import SendRequest
 from app.shared.http_client import ShalomHttpClient
 
 async def obtener_envios(client: ShalomHttpClient, claves: SendRequest) -> dict:

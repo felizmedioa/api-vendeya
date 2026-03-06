@@ -1,6 +1,4 @@
-from fastapi import APIRouter, Depends
-from app.core.dependencies import get_shalom_client
-from app.shared.http_client import ShalomHttpClient
+from fastapi import APIRouter
 
 from app.features.terminals.service import get_terminals, filter_terminals
 
@@ -15,9 +13,7 @@ router = APIRouter(
     summary="Obtener terminales del API",
     description="Obtener terminales disponibles como origen y destino",
 )
-async def obtener_terminales(
-    client: ShalomHttpClient = Depends(get_shalom_client),
-) -> list[dict]:
+async def obtener_terminales() -> list[dict]:
 
-    terminales_unfiltered = await get_terminals(client)
+    terminales_unfiltered = await get_terminals()
     return filter_terminals(terminales_unfiltered)

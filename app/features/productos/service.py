@@ -3,16 +3,19 @@
 # ============================================================================
 
 from app.shared.http_client import ShalomHttpClient
+from app.features.process_shipment.auth.service import login
 
 
-async def get_productos(shalom: ShalomHttpClient) -> dict:
+async def get_productos() -> dict:
     """
     Obtiene la lista de productos de Envía Ya.
-
-    ¿Por qué es POST y no GET?
-    Porque así lo definió Shalom en su API interna.
+    Crea su propio cliente HTTP, inicia sesión y cierra al finalizar.
     """
-    shalom.verificar_sesion()
-    headers = shalom.obtener_headers_ajax()
-    response = await shalom.client.post("/envia_ya/products", headers=headers)
-    return response.json()
+    client = ShalomHttpClient()
+    try:
+        await login(client)
+        headers = client.obtener_headers_ajax()
+        response = await client.client.post("/envia_ya/products", headers=headers)
+        return response.json()
+    finally:
+        await client.close()

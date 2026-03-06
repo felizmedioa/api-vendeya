@@ -1,22 +1,26 @@
 
 from app.shared.http_client import ShalomHttpClient
 from app.features.terminals.schemes import TerminalList
+from app.features.process_shipment.auth.service import login
 
-async def get_terminals(
-    client: ShalomHttpClient,
-) -> list[dict]:
+async def get_terminals() -> list[dict]:
     """
     Obtiene los terminales disponibles como origen y destino.
+    Crea su propio cliente HTTP, inicia sesión y cierra al finalizar.
     """
-    client.verificar_sesion()
-    headers = client.obtener_headers_ajax()
+    client = ShalomHttpClient()
+    try:
+        await login(client)
+        headers = client.obtener_headers_ajax()
 
-    response = await client.client.post(
-        "/envia_ya/terminals",
-        headers=headers,
-    )
+        response = await client.client.post(
+            "/envia_ya/terminals",
+            headers=headers,
+        )
 
-    return response.json()['Map']
+        return response.json()['Map']
+    finally:
+        await client.close()
 
 def filter_terminals(terminals: list[dict]):
 

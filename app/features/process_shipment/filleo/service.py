@@ -3,7 +3,7 @@
 # ============================================================================
 from pathlib import Path
 
-from app.features.filleo.schemas import FilleoRequest
+from app.features.process_shipment.filleo.schemas import FilleoRequest
 from app.shared.http_client import ShalomHttpClient
 from openpyxl import load_workbook
 from app.core.config import settings

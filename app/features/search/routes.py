@@ -2,12 +2,10 @@
 # routes.py — Endpoint de búsqueda
 # ============================================================================
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 
-from app.core.dependencies import get_shalom_client
 from app.features.search.schemas import BusquedaRequest, BusquedaResponse
 from app.features.search.service import buscar
-from app.shared.http_client import ShalomHttpClient
 
 router = APIRouter(
     tags=["Búsqueda"],
@@ -18,10 +16,9 @@ router = APIRouter(
     "/buscar-persona",
     response_model=BusquedaResponse,
     summary="Buscar según datos del formulario",
-    description="Busca en Shalom usando tipo de producto, origen y destino. Requiere sesión activa.",
+    description="Busca en Shalom usando tipo de producto, origen y destino.",
 )
 async def buscar_endpoint(
     datos: BusquedaRequest,
-    client: ShalomHttpClient = Depends(get_shalom_client),
 ):
-    return await buscar(client, datos)
+    return await buscar(datos)

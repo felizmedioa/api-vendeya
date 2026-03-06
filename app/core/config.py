@@ -37,7 +37,7 @@ class Settings(BaseSettings):
     TIPO_PAQUETE: str = "PAQUETE XXS"
 
     # Clave de paquete
-    CLAVE_PAQUETE: str = "1357"
+    CLAVE_PAQUETE: str = "0246"
 
     class Config:
         # Le dice a pydantic-settings que busque el archivo .env

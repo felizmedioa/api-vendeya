@@ -1,12 +1,11 @@
 # ============================================================================
-# schemas.py — Modelos Pydantic para autenticación
+# schemas.py — Modelos Pydantic para filleo
 # ============================================================================
 
 from pydantic import BaseModel
 
 
-class LoginResponse(BaseModel):
-    """Respuesta del endpoint de login."""
-    estado: str
-    mensaje: str
-    xsrf_token: str
+class FilleoRequest(BaseModel):
+    dni: str
+    telefono: str
+    destino: str

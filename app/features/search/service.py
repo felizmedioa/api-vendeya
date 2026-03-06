@@ -4,25 +4,24 @@
 
 from app.features.search.schemas import BusquedaRequest, BusquedaResponse
 from app.shared.http_client import ShalomHttpClient
+from app.features.process_shipment.auth.service import login
 
 
-async def buscar(shalom: ShalomHttpClient, datos_busqueda: BusquedaRequest) -> BusquedaResponse:
+async def buscar(datos_busqueda: BusquedaRequest) -> BusquedaResponse:
     """
     Ejecuta una búsqueda en Shalom con los datos del formulario.
-
-    Args:
-        shalom: Cliente HTTP con sesión activa.
-        datos_busqueda: Diccionario con los filtros de búsqueda validados.
-
-    Returns:
-        Respuesta JSON de Shalom.
+    Crea su propio cliente HTTP, inicia sesión y cierra al finalizar.
     """
-    shalom.verificar_sesion()
-    headers = shalom.obtener_headers_ajax()
+    client = ShalomHttpClient()
+    try:
+        await login(client)
+        headers = client.obtener_headers_ajax()
 
-    response = await shalom.client.post(
-        "/envia_ya/person/search",
-        headers=headers,
-        json=datos_busqueda.model_dump(),
-    )
-    return response.json()
+        response = await client.client.post(
+            "/envia_ya/person/search",
+            headers=headers,
+            json=datos_busqueda.model_dump(),
+        )
+        return response.json()
+    finally:
+        await client.close()

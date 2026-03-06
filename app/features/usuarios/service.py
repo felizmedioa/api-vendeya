@@ -3,13 +3,18 @@
 # ============================================================================
 
 from app.shared.http_client import ShalomHttpClient
+from app.features.process_shipment.auth.service import login
 
 
-async def get_user(shalom: ShalomHttpClient) -> dict:
+async def get_user() -> dict:
     """
     Obtiene los datos del usuario autenticado.
-    Requiere haber hecho login() previamente.
+    Crea su propio cliente HTTP, inicia sesión y cierra al finalizar.
     """
-    shalom.verificar_sesion()
-    response = await shalom.client.get("/get-auth-user")
-    return response.json()
+    client = ShalomHttpClient()
+    try:
+        await login(client)
+        response = await client.client.get("/get-auth-user")
+        return response.json()
+    finally:
+        await client.close()
