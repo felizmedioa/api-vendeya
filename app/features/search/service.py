@@ -1,18 +1,18 @@
 # ============================================================================
-# service.py — Lógica de búsqueda con Shalom
+# service.py — Lógica de búsqueda
 # ============================================================================
 
 from app.features.search.schemas import BusquedaRequest, BusquedaResponse
-from app.shared.http_client import ShalomHttpClient
+from app.shared.http_client import HttpClient
 from app.features.process_shipment.auth.service import login
 
 
 async def buscar(datos_busqueda: BusquedaRequest) -> BusquedaResponse:
     """
-    Ejecuta una búsqueda en Shalom con los datos del formulario.
+    Ejecuta una búsqueda con los datos del formulario.
     Crea su propio cliente HTTP, inicia sesión y cierra al finalizar.
     """
-    client = ShalomHttpClient()
+    client = HttpClient()
     try:
         await login(client)
         headers = client.obtener_headers_ajax()

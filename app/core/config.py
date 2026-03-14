@@ -20,15 +20,15 @@ class Settings(BaseSettings):
     Si no existen en .env, se usan los valores por defecto definidos aquí.
     """
 
-    # URL base del sitio de Shalom
-    SHALOM_BASE_URL: str = "https://pro.shalom.pe"
+    # URL base del sitio externo
+    CLIENT_BASE_URL: str = "https://pro.shalom.pe"
 
-    # Credenciales para iniciar sesión en Shalom
-    SHALOM_EMAIL: str = ""
-    SHALOM_PASSWORD: str = ""
+    # Credenciales para iniciar sesión
+    CLIENT_EMAIL: str = ""
+    CLIENT_PASSWORD: str = ""
 
     # Timeout para las peticiones HTTP (en segundos)
-    SHALOM_TIMEOUT: int = 30
+    CLIENT_TIMEOUT: int = 30
 
     # Agencia de origen
     AGENCIA_ORIGEN: str = "HUAYCAN AV HORACIO ZEVALLOS"
@@ -38,6 +38,13 @@ class Settings(BaseSettings):
 
     # Clave de paquete
     CLAVE_PAQUETE: str = "0246"
+
+    # URL del Google Apps Script para registro de usuarios
+    GOOGLE_SCRIPT_URL: str = ""
+
+    # JWT
+    SECRET_KEY: str = ""
+    ALGORITHM: str = "HS256"
 
     class Config:
         # Le dice a pydantic-settings que busque el archivo .env

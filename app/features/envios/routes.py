@@ -15,7 +15,7 @@ router = APIRouter(
 @router.post(
     "/crear-envio",
     summary="Crear una orden de envío",
-    description="Crea un envío en Shalom con los datos proporcionados.",
+    description="Crea un envío con los datos proporcionados.",
 )
 async def crear_envio_endpoint(
     datos: DatosEnvio,

@@ -1,4 +1,4 @@
-from app.shared.http_client import ShalomHttpClient
+from app.shared.http_client import HttpClient
 from app.features.get_key.schemas import SetKeyRequest
 from app.features.process_shipment.auth.service import login
 from app.core.config import settings
@@ -8,7 +8,7 @@ async def obtener_clave_envio(id_envio: int):
     Obtiene la clave de un envío.
     Crea su propio cliente HTTP, inicia sesión y cierra al finalizar.
     """
-    client = ShalomHttpClient()
+    client = HttpClient()
     try:
         await login(client)
         headers = client.obtener_headers_ajax()
@@ -27,7 +27,7 @@ async def asignar_clave(datos: SetKeyRequest):
     Asigna una clave a un envío.
     Crea su propio cliente HTTP, inicia sesión y cierra al finalizar.
     """
-    client = ShalomHttpClient()
+    client = HttpClient()
     try:
         await login(client)
         headers = client.obtener_headers_ajax()

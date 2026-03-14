@@ -1,7 +1,7 @@
 # ============================================================================
 # service.py — Orquestación: login → filleo → preregister → set_code → register
 # ============================================================================
-# Cada llamada crea su propio ShalomHttpClient con sesión independiente.
+# Cada llamada crea su propio HttpClient con sesión independiente.
 # Esto permite múltiples llamadas concurrentes sin interferencia.
 # ============================================================================
 
@@ -18,7 +18,7 @@ from app.features.process_shipment.schemas import (
     ProcessShipmentRequest,
     ProcessShipmentResponse,
 )
-from app.shared.http_client import ShalomHttpClient
+from app.shared.http_client import HttpClient
 from app.features.process_shipment.set_code.service import set_code
 from app.features.process_shipment.set_code.schemas import SetCodeRequest
 
@@ -35,7 +35,7 @@ async def procesar_envio(
     cada uno con su propio cliente HTTP independiente.
 
     0. Login      – crea cliente, inicia sesión y obtiene cookies.
-    1. Filleo     – llena el Excel y lo sube a Shalom.
+    1. Filleo     – llena el Excel y lo sube.
     2. Preregister – obtiene los pre-envíos y extrae el id.
     3. Set Code   – asigna el código a los envíos.
     4. Register   – registra la orden con el id obtenido.
@@ -44,7 +44,7 @@ async def procesar_envio(
     cuál fue el paso que falló. El cliente se cierra siempre al final.
     """
 
-    client = ShalomHttpClient()
+    client = HttpClient()
 
     try:
         # ── Paso 0: Login ────────────────────────────────────────────────

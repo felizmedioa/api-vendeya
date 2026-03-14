@@ -16,7 +16,7 @@ class TipoProductoJson(BaseModel):
 
 class DatosEnvio(BaseModel):
     """
-    Datos necesarios para crear un envío en Shalom.
+    Datos necesarios para crear un envío.
 
     Todos los campos obligatorios tienen su tipo definido.
     Los campos opcionales usan Optional con valor por defecto.

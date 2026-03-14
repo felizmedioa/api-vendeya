@@ -1,10 +1,10 @@
 # ============================================================================
-# service.py — Lógica de filleo con Shalom
+# service.py — Lógica de filleo
 # ============================================================================
 from pathlib import Path
 
 from app.features.process_shipment.filleo.schemas import FilleoRequest
-from app.shared.http_client import ShalomHttpClient
+from app.shared.http_client import HttpClient
 from openpyxl import load_workbook
 from app.core.config import settings
 
@@ -30,23 +30,23 @@ def fill_book(archivo: str, datos: FilleoRequest) -> str:
 
     return str(ruta)
 
-async def fillear(shalom: ShalomHttpClient, ruta_archivo: str) -> dict:
+async def fillear(client: HttpClient, ruta_archivo: str) -> dict:
     """
-    Envía el archivo Excel a Shalom como multipart/form-data.
+    Envía el archivo Excel como multipart/form-data.
 
     Args:
-        shalom: Cliente HTTP con sesión activa.
+        client: Cliente HTTP con sesión activa.
         ruta_archivo: Ruta del archivo Excel a enviar.
     """
-    shalom.verificar_sesion()
-    headers = shalom.obtener_headers_ajax()
+    client.verificar_sesion()
+    headers = client.obtener_headers_ajax()
     # Remover Content-Type y Accept para que httpx maneje el multipart correctamente
     headers.pop("Content-Type", None)
     headers.pop("Accept", None)
     headers["Accept"] = "application/json"
 
     with open(ruta_archivo, "rb") as f:
-        response = await shalom.client.post(
+        response = await client.client.post(
             "/import-excel",
             headers=headers,
             files={"file": (Path(ruta_archivo).name, f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")},

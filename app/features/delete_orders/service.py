@@ -1,4 +1,4 @@
-from app.shared.http_client import ShalomHttpClient
+from app.shared.http_client import HttpClient
 from app.features.process_shipment.auth.service import login
 
 async def eliminar_ordenes(id: int) -> dict:
@@ -6,7 +6,7 @@ async def eliminar_ordenes(id: int) -> dict:
     Elimina una orden de servicio.
     Crea su propio cliente HTTP, inicia sesión y cierra al finalizar.
     """
-    client = ShalomHttpClient()
+    client = HttpClient()
     try:
         await login(client)
         headers = client.obtener_headers_ajax()

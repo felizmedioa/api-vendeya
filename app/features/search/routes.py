@@ -16,7 +16,7 @@ router = APIRouter(
     "/buscar-persona",
     response_model=BusquedaResponse,
     summary="Buscar según datos del formulario",
-    description="Busca en Shalom usando tipo de producto, origen y destino.",
+    description="Busca usando tipo de producto, origen y destino.",
 )
 async def buscar_endpoint(
     datos: BusquedaRequest,

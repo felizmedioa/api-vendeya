@@ -9,7 +9,7 @@
 # 2. Incluir los routers de cada feature
 #
 # NO debe contener lógica de negocio ni endpoints directamente.
-# Cada feature crea su propio ShalomHttpClient al recibir una llamada.
+# Cada feature crea su propio HttpClient al recibir una llamada.
 # ============================================================================
 
 from fastapi import FastAPI
@@ -23,11 +23,14 @@ from app.features.delete_orders.routes import router as delete_orders_router
 from app.features.get_key.routes import router as get_key_router
 from app.features.terminals.routes import router as terminals_router
 from app.features.process_shipment.routes import router as process_shipment_router
+from app.features.auth.routes import router as auth_router
+from app.features.user.routes import router as user_router
+from app.features.ping.routes import router as ping_router
 
 
 app = FastAPI(
-    title="API Shalom",
-    description="API proxy para interactuar con pro.shalom.pe",
+    title="API VendeYa",
+    description="API proxy para interactuar con servicios externos",
     version="1.0.0",
 )
 
@@ -53,3 +56,6 @@ app.include_router(delete_orders_router)
 app.include_router(get_key_router)
 app.include_router(terminals_router)
 app.include_router(process_shipment_router)
+app.include_router(auth_router)
+app.include_router(user_router)
+app.include_router(ping_router)

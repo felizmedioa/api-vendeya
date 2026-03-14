@@ -1,5 +1,5 @@
 # ============================================================================
-# http_client.py — Cliente HTTP compartido para comunicarse con pro.shalom.pe
+# http_client.py — Cliente HTTP compartido para comunicarse con la API externa
 # ============================================================================
 # Este módulo contiene la clase base que encapsula el httpx.AsyncClient
 # y los helpers comunes que usan todos los features (headers AJAX,
@@ -17,9 +17,9 @@ from fastapi import HTTPException
 from app.core.config import settings
 
 
-class ShalomHttpClient:
+class HttpClient:
     """
-    Cliente HTTP base que mantiene la sesión con pro.shalom.pe.
+    Cliente HTTP base que mantiene la sesión con la API externa.
 
     Encapsula:
     - El httpx.AsyncClient con URL base y timeout
@@ -29,8 +29,8 @@ class ShalomHttpClient:
 
     def __init__(self):
         self.client = httpx.AsyncClient(
-            base_url=settings.SHALOM_BASE_URL,
-            timeout=settings.SHALOM_TIMEOUT,
+            base_url=settings.CLIENT_BASE_URL,
+            timeout=settings.CLIENT_TIMEOUT,
         )
 
     async def close(self):
@@ -50,7 +50,7 @@ class ShalomHttpClient:
 
     def obtener_headers_ajax(self) -> dict:
         """
-        Genera los headers necesarios para peticiones AJAX a Shalom.
+        Genera los headers necesarios para peticiones AJAX.
 
         - X-Requested-With: Laravel verifica que sea AJAX
         - x-xsrf-token: Protección CSRF (decodificado de la cookie)
@@ -62,6 +62,6 @@ class ShalomHttpClient:
         return {
             "Accept": "application/json, text/javascript, */*; q=0.01",
             "X-Requested-With": "XMLHttpRequest",
-            "Referer": f"{settings.SHALOM_BASE_URL}/",
+            "Referer": f"{settings.CLIENT_BASE_URL}/",
             "x-xsrf-token": xsrf_token,
         }

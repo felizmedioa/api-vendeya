@@ -1,17 +1,17 @@
 # ============================================================================
-# service.py — Lógica de envíos con Shalom
+# service.py — Lógica de envíos
 # ============================================================================
 
-from app.shared.http_client import ShalomHttpClient
+from app.shared.http_client import HttpClient
 from app.features.process_shipment.auth.service import login
 
 
 async def crear_envio(datos_envio: dict) -> dict:
     """
-    Crea una orden de servicio (envío) en Shalom.
+    Crea una orden de servicio (envío).
     Crea su propio cliente HTTP, inicia sesión y cierra al finalizar.
     """
-    client = ShalomHttpClient()
+    client = HttpClient()
     try:
         await login(client)
         headers = client.obtener_headers_ajax()

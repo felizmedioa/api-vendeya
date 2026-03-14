@@ -3,9 +3,9 @@
 # ============================================================================
 
 from app.features.process_shipment.set_code.schemas import SetCodeRequest
-from app.shared.http_client import ShalomHttpClient
+from app.shared.http_client import HttpClient
 
-async def set_code(client: ShalomHttpClient, datos: SetCodeRequest):
+async def set_code(client: HttpClient, datos: SetCodeRequest):
 
     client.verificar_sesion()
     headers = client.obtener_headers_ajax()
