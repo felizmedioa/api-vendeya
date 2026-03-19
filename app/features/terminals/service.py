@@ -24,8 +24,8 @@ async def get_terminals() -> list[dict]:
 
 def filter_terminals(terminals: list[dict]):
 
-    terminales = list((filter(lambda x: x['destino'] == 1 and x['departamento'] != 'LIMA' and x['provincia'] != 'LIMA', terminals)))
+    terminales = list((filter(lambda x: x['destino'] == 1, terminals)))
     
-    terminales_ordenadas = list(map(lambda x: {'id': x['ter_id'], 'nombre': x['nombre'], 'nombre_resumido': x['lugar_over']}, terminales))
+    terminales_ordenadas = list(map(lambda x: {'nombre': x['nombre'].title(), 'direccion': x['direccion'].title(), 'nombre_resumido': x['lugar_over']}, terminales))
     
     return terminales_ordenadas

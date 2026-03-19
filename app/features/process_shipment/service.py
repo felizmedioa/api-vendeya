@@ -84,6 +84,7 @@ async def procesar_envio(
         try:
             preregister_request = SendRequest(converted=False, send=False)
             response = await obtener_envios(client, preregister_request)
+            print(response)
             order_id: int = response["data"][0]["id"]
             
         except Exception as exc:

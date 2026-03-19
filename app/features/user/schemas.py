@@ -1,21 +1,16 @@
 # ============================================================================
-# schemas.py — Modelos Pydantic para el feature user
+# schemas.py — Modelos Pydantic compartidos del feature user
+# ============================================================================
+# Los schemas específicos de cada sub-feature están en sus propias carpetas.
+# Este archivo se usa para schemas compartidos entre sub-features.
 # ============================================================================
 
 from pydantic import BaseModel
 from typing import Optional
 
 
-class UserResponse(BaseModel):
-    """Datos de un usuario."""
-    id: int | None = None
-    name: str
-    email: str
-    phone: Optional[str] = None
-
-
-class UserUpdateRequest(BaseModel):
-    """Datos para actualizar un usuario."""
-    name: Optional[str] = None
-    email: Optional[str] = None
-    phone: Optional[str] = None
+class UserBase(BaseModel):
+    """Datos base de un usuario (compartido entre sub-features)."""
+    id: str | None = None
+    name: str | None = None
+    email: str | None = None

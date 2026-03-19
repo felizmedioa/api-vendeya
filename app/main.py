@@ -26,6 +26,7 @@ from app.features.process_shipment.routes import router as process_shipment_rout
 from app.features.auth.routes import router as auth_router
 from app.features.user.routes import router as user_router
 from app.features.ping.routes import router as ping_router
+from app.features.pedidos_forms.routes import router as pedidos_forms_router
 
 
 app = FastAPI(
@@ -59,3 +60,4 @@ app.include_router(process_shipment_router)
 app.include_router(auth_router)
 app.include_router(user_router)
 app.include_router(ping_router)
+app.include_router(pedidos_forms_router)

@@ -51,6 +51,7 @@ async def fillear(client: HttpClient, ruta_archivo: str) -> dict:
             headers=headers,
             files={"file": (Path(ruta_archivo).name, f, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")},
         )
+        print(response.json())
     if(response.status_code != 200):
         raise Exception("Error al enviar el archivo")
     return 'Archivo enviado correctamente'

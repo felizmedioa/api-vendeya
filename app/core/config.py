@@ -42,6 +42,10 @@ class Settings(BaseSettings):
     # URL del Google Apps Script para registro de usuarios
     GOOGLE_SCRIPT_URL: str = ""
 
+    # URL del Google Apps Script para configuraciones de usuario
+    GOOGLE_SCRIPT_CONFIG_URL: str = ""
+    APPS_SCRIPT_PEDIDOS_FORMS_URL: str = ""
+
     # JWT
     SECRET_KEY: str = ""
     ALGORITHM: str = "HS256"
