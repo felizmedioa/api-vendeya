@@ -40,6 +40,7 @@ app.add_middleware(
     allow_origins=[
         "https://pedido-repartos-lima-provincia.vercel.app",
         "http://localhost:5500",
+        "http://198.168.101.3:5500",
     ],
     allow_credentials=True,
     allow_methods=["*"],  # Permite todos los métodos (GET, POST, etc.)

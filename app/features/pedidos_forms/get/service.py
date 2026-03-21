@@ -8,26 +8,42 @@ import httpx
 from fastapi import HTTPException
 
 from app.core.config import settings
+from app.features.auth.service import decodificar_token_JWT
 
 logger = logging.getLogger("pedidos_forms.get")
 
 
-async def get_pedidos_by_client(id_usuario: str) -> list:
+async def get_pedidos_by_client(token: str) -> list:
     """
     Obtiene los pedidos asociados a un cliente desde Google Sheets.
 
     Flujo:
-    1. Validar parámetros de entrada
+    1. Validar Token JWT
     2. Consultar a Google Apps Script por id_usuario
     3. Retornar el arreglo de datos o una lista vacía
     """
+    payload = decodificar_token_JWT(token)
+
+    if not payload:
+        raise HTTPException(
+            status_code=401,
+            detail="Sesión expirada. Inicie sesión nuevamente.",
+        )
+
+    user_id = payload.get("sub", "")
+
+    if not user_id:
+        raise HTTPException(
+            status_code=401,
+            detail="Token inválido. No contiene ID de usuario.",
+        )
 
     # ── Paso 1: Consultar Google Apps Script ─────────────────────────
     try:
         async with httpx.AsyncClient(timeout=30) as client:
             response = await client.get(
                 settings.APPS_SCRIPT_PEDIDOS_FORMS_URL,
-                params={"id_usuario": id_usuario},
+                params={"id_usuario": user_id},
                 follow_redirects=True,
             )
     except httpx.RequestError as exc:

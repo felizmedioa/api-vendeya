@@ -15,14 +15,16 @@ async def create_pedido(data: PedidoFormCreate):
     """
     return await create_pedido_form(data)
 
-@router.get("/")
-async def get_pedidos(id_usuario: str):
+from app.features.pedidos_forms.get.schemas import TokenRequest
+
+@router.post("/list")
+async def get_pedidos(data: TokenRequest):
     """
     Endpoint para consultar los pedidos realizados mediante el form.
-    Permite a tu cliente ver su bandeja de pedidos en Sheets.
-    TODO: En el futuro se recomienda extraer 'id_usuario' de las dependencias Token en lugar de parámetro query.
+    Permite a tu cliente ver su bandeja de pedidos en Sheets de forma segura.
+    Extrae 'id_usuario' a partir del Token JWT.
     """
-    return await get_pedidos_by_client(id_usuario)
+    return await get_pedidos_by_client(data.token)
 
 @router.patch("/señal-impreso")
 async def signal_pedidos_impreso(data: PedidoStatusUpdate):
