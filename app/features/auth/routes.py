@@ -33,3 +33,17 @@ async def login_endpoint(datos: LoginRequest):
 )
 async def register_endpoint(datos: RegisterRequest):
     return await register_user(datos)
+
+
+from app.features.auth.password.schemas import ChangePasswordRequest, ChangePasswordResponse
+from app.features.auth.password.service import change_password
+
+@router.post(
+    "/password",
+    response_model=ChangePasswordResponse,
+    summary="Cambiar contraseña",
+    description="Actualiza la contraseña de un usuario validando su JWT actual.",
+)
+async def password_endpoint(datos: ChangePasswordRequest):
+    return await change_password(datos)
+
