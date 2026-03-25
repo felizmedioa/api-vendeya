@@ -46,6 +46,9 @@ class Settings(BaseSettings):
     GOOGLE_SCRIPT_CONFIG_URL: str = ""
     APPS_SCRIPT_PEDIDOS_FORMS_URL: str = ""
 
+    # URL del Google Apps Script para códigos diarios
+    GOOGLE_SCRIPT_CODIGOS: str = ""
+
     # JWT
     SECRET_KEY: str = ""
     ALGORITHM: str = "HS256"

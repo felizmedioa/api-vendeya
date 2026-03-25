@@ -7,10 +7,14 @@
 # Responsabilidades de este archivo:
 # 1. Crear la instancia de FastAPI
 # 2. Incluir los routers de cada feature
+# 3. Iniciar/detener el scheduler de código diario
 #
 # NO debe contener lógica de negocio ni endpoints directamente.
 # Cada feature crea su propio HttpClient al recibir una llamada.
 # ============================================================================
+
+import logging
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -27,12 +31,47 @@ from app.features.auth.routes import router as auth_router
 from app.features.user.routes import router as user_router
 from app.features.ping.routes import router as ping_router
 from app.features.pedidos_forms.routes import router as pedidos_forms_router
+from app.features.process_shipment.set_code.routes import router as daily_code_router
+
+from app.core.scheduler import start_scheduler, shutdown_scheduler
+from app.features.process_shipment.set_code.daily_code_service import (
+    sync_code_from_sheets,
+)
+
+logger = logging.getLogger("main")
+
+# ============================================================================
+# Lifespan — arranque y apagado de la app
+# ============================================================================
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Al arrancar:
+      1. Sincroniza CLAVE_PAQUETE desde Google Sheets (si está configurado)
+      2. Inicia el scheduler para rotación diaria a las 00:00 Lima
+    Al apagar:
+      1. Detiene el scheduler
+    """
+    # ── Startup ──────────────────────────────────────────────────────────
+    logger.info("Iniciando API VendeYa...")
+    await sync_code_from_sheets()
+    start_scheduler()
+    logger.info("API lista.")
+
+    yield
+
+    # ── Shutdown ─────────────────────────────────────────────────────────
+    shutdown_scheduler()
+    logger.info("API detenida.")
 
 
 app = FastAPI(
     title="API VendeYa",
     description="API proxy para interactuar con servicios externos",
     version="1.0.0",
+    lifespan=lifespan,
 )
 
 app.add_middleware(
@@ -62,3 +101,4 @@ app.include_router(auth_router)
 app.include_router(user_router)
 app.include_router(ping_router)
 app.include_router(pedidos_forms_router)
+app.include_router(daily_code_router)
