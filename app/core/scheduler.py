@@ -41,6 +41,9 @@ def start_scheduler():
         id="daily_code_rotation",
         name="Rotación diaria de código",
         replace_existing=True,
+        coalesce=True,              # Fusionar múltiples fires pendientes en 1
+        misfire_grace_time=60,      # Solo ejecutar si el retraso es < 60s
+        max_instances=1,            # No permitir ejecuciones paralelas
     )
     scheduler.start()
     logger.info("Scheduler iniciado — próxima ejecución: 00:00 America/Lima")
