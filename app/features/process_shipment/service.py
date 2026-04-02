@@ -19,12 +19,31 @@ from app.features.process_shipment.schemas import (
     ProcessShipmentResponse,
 )
 from app.shared.http_client import HttpClient
-from app.features.process_shipment.set_code.service import set_code
+from app.features.process_shipment.set_code.service import (
+    set_code,
+    send_shipment_pushover_notification,
+)
 from app.features.process_shipment.set_code.schemas import SetCodeRequest
 
 from app.core.config import settings
 
 logger = logging.getLogger("process_shipment")
+
+
+async def _notify_pushover(
+    datos: ProcessShipmentRequest, success: bool, error_detail: str | None = None
+):
+    """Helper para enviar notificación Pushover sin afectar el response."""
+    try:
+        await send_shipment_pushover_notification(
+            telefono=datos.telefono,
+            dni=datos.dni,
+            clave_paquete=settings.CLAVE_PAQUETE,
+            success=success,
+            error_detail=error_detail,
+        )
+    except Exception as exc:
+        logger.warning(f"Error enviando notificación Pushover: {exc}")
 
 
 async def procesar_envio(
@@ -42,6 +61,7 @@ async def procesar_envio(
 
     Si cualquier paso falla, retorna inmediatamente indicando
     cuál fue el paso que falló. El cliente se cierra siempre al final.
+    Al finalizar (éxito o error) envía notificación Pushover.
     """
 
     client = HttpClient()
@@ -53,11 +73,12 @@ async def procesar_envio(
             await login(client)
             
         except Exception as exc:
-
+            detail = f"Error en login: {exc}"
+            await _notify_pushover(datos, success=False, error_detail=detail)
             return ProcessShipmentResponse(
                 success=False,
                 failed_step="login",
-                detail=f"Error en login: {exc}",
+                detail=detail,
             )
 
         # ── Paso 1: Filleo ───────────────────────────────────────────────
@@ -72,11 +93,12 @@ async def procesar_envio(
             await fillear(client, ruta)
             
         except Exception as exc:
-            
+            detail = f"Error en filleo: {exc}"
+            await _notify_pushover(datos, success=False, error_detail=detail)
             return ProcessShipmentResponse(
                 success=False,
                 failed_step="filleo",
-                detail=f"Error en filleo: {exc}",
+                detail=detail,
             )
 
         # ── Paso 2: Preregister ──────────────────────────────────────────
@@ -87,11 +109,12 @@ async def procesar_envio(
             order_id: int = response["data"][0]["id"]
             
         except Exception as exc:
-            
+            detail = f"Error en preregister: {exc}"
+            await _notify_pushover(datos, success=False, error_detail=detail)
             return ProcessShipmentResponse(
                 success=False,
                 failed_step="preregister",
-                detail=f"Error en preregister: {exc}",
+                detail=detail,
             )
 
         # ── Paso 3: Set Code ────────────────────────────────────────────
@@ -101,11 +124,12 @@ async def procesar_envio(
             await set_code(client, set_code_request)
             
         except Exception as exc:
-            
+            detail = f"Error en set_code: {exc}"
+            await _notify_pushover(datos, success=False, error_detail=detail)
             return ProcessShipmentResponse(
                 success=False,
                 failed_step="set_code",
-                detail=f"Error en set_code: {exc}",
+                detail=detail,
             )
 
         # ── Paso 4: Register ────────────────────────────────────────────
@@ -115,15 +139,18 @@ async def procesar_envio(
             resultado = await registrar_orden(client, register_request)
             
         except Exception as exc:
-            
+            detail = f"Error en register: {exc}"
+            await _notify_pushover(datos, success=False, error_detail=detail)
             return ProcessShipmentResponse(
                 success=False,
                 failed_step="register",
-                detail=f"Error en register: {exc}",
+                detail=detail,
             )
 
         # ── Todo bien ────────────────────────────────────────────────────
         
+        await _notify_pushover(datos, success=True)
+
         return ProcessShipmentResponse(
             success=True,
             order_id=order_id,
@@ -133,3 +160,4 @@ async def procesar_envio(
     finally:
         # Siempre cerrar el cliente, haya éxito o error
         await client.close()
+

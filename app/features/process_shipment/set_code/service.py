@@ -64,3 +64,42 @@ async def send_pushover_notification(code: str) -> dict:
             },
         )
         return response.json()
+
+
+async def send_shipment_pushover_notification(
+    telefono: str,
+    dni: str,
+    clave_paquete: str,
+    success: bool,
+    error_detail: str | None = None,
+) -> dict:
+    """
+    Envía una notificación Pushover con el resultado del registro de un paquete.
+    Se envía tanto en éxito como en error.
+    """
+    if success:
+        message = (
+            f"✅ Paquete registrado exitosamente\n"
+            f"• Número: {telefono}\n"
+            f"• DNI: {dni}\n"
+            f"• Clave: {clave_paquete}"
+        )
+    else:
+        message = (
+            f"❌ Error al registrar paquete\n"
+            f"• Número: {telefono}\n"
+            f"• DNI: {dni}\n"
+            f"• Clave: {clave_paquete}\n"
+            f"• Error: {error_detail}"
+        )
+
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            "https://api.pushover.net/1/messages.json",
+            json={
+                "token": "av5addzfqxjwxy5r8vi45xdb3pnoju",
+                "user": "u1rrniu5yy9xfcugs3o3kuz8ofn6fa",
+                "message": message,
+            },
+        )
+        return response.json()

@@ -14,10 +14,7 @@ from datetime import datetime
 import httpx
 
 from app.core.config import settings
-from app.features.process_shipment.set_code.service import (
-    generate_code,
-    send_pushover_notification,
-)
+from app.features.process_shipment.set_code.service import generate_code
 
 logger = logging.getLogger("daily_code")
 
@@ -134,14 +131,6 @@ async def rotate_daily_code(force: bool = False) -> dict:
         _last_rotation_date = fecha  # Marcar como rotado
         logger.info(f"CLAVE_PAQUETE actualizado en memoria: {new_code}")
 
-        # 3. Notificar por Pushover
-        try:
-            pushover_result = await send_pushover_notification(new_code)
-            logger.info(f"Pushover → {pushover_result}")
-        except Exception as exc:
-            logger.error(f"Error enviando Pushover: {exc}")
-            pushover_result = {"error": str(exc)}
-
         return {
             "success": True,
             "skipped": False,
@@ -150,5 +139,4 @@ async def rotate_daily_code(force: bool = False) -> dict:
             "new_code": new_code,
             "fecha": fecha,
             "sheets": sheets_result,
-            "pushover": pushover_result,
         }
