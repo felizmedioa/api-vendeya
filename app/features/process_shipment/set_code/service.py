@@ -58,8 +58,8 @@ async def send_pushover_notification(code: str) -> dict:
         response = await client.post(
             "https://api.pushover.net/1/messages.json",
             json={
-                "token": "av5addzfqxjwxy5r8vi45xdb3pnoju",
-                "user": "u1rrniu5yy9xfcugs3o3kuz8ofn6fa",
+                "token": "a7cktd4uy585kpcaqdq96ukua9rpgp",
+                "user": "uc4s3r8tb8uu24v7xef9qcrypew3ep",
                 "message": f"🔐 Nuevo código diario: {code}",
             },
         )
